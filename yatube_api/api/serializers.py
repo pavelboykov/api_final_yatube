@@ -7,7 +7,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('id', 'title', 'slug', 'description')
+        fields = '__all__'
         read_only_fields = ('id', 'title', 'slug', 'description')
 
 
@@ -19,7 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'text', 'pub_date', 'image', 'author', 'group')
+        fields = '__all__'
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -30,7 +30,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'author', 'post', 'text', 'created')
+        fields = '__all__'
         read_only_fields = ('post', )
 
 
@@ -45,13 +45,6 @@ class FollowSerializer(serializers.ModelSerializer):
         queryset=User.objects.all()
     )
 
-    def validate(self, data):
-        if self.context['request'].user == data['following']:
-            raise serializers.ValidationError(
-                "Подписчик не может совпадать с кумиром!"
-            )
-        return data
-
     class Meta:
         model = Follow
         fields = ('user', 'following')
@@ -63,3 +56,10 @@ class FollowSerializer(serializers.ModelSerializer):
                         'Повторно операция выполнена не будет.'
             )
         ]
+
+    def validate(self, data):
+        if self.context['request'].user == data['following']:
+            raise serializers.ValidationError(
+                "Подписчик не может совпадать с кумиром!"
+            )
+        return data

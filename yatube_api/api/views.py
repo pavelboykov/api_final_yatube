@@ -11,20 +11,16 @@ from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
 
 class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
+    queryset = Group.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly, )
     http_method_names = ['get']
-
-    def get_queryset(self):
-        return Group.objects.all()
 
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
+    queryset = Post.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly, )
     pagination_class = LimitOffsetPagination
-
-    def get_queryset(self):
-        return Post.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
